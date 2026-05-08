@@ -1,4 +1,5 @@
 package com.example.demo.repository;
+//데이터베이스와 통신하여 데이터 저장/조회/수정/삭제 등 수행
 
 import com.example.demo.domain.Member;
 

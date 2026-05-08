@@ -1,4 +1,5 @@
 package com.example.demo.domain;
+//데이터를 표현하는 객체
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,5 @@
 package com.example.demo.service;
+//실제 비즈니스 로직 처리
 
 import com.example.demo.domain.Member;
 import com.example.demo.repository.MemberRepository;

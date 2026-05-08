@@ -1,4 +1,5 @@
 package com.example.demo.DTO;
+//데이터를 담는 전용 객체(Data Transfer Object)
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
