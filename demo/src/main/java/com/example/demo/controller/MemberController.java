@@ -63,30 +63,40 @@ public class MemberController {
         //List<> 회원 한 명이 아닌 모든 회원 정보
         //MemberDTO.Response.Member => 회원정보에서 비밀번호를 뺀 값들
 
-        //
+        //모든 회원 정보를 list형식으로 가져옴
         List<Member> findMembers = memberService.findAll();
+
 
         List<MemberDTO.Response.Member> collect = findMembers.stream()
                 .map(m -> new MemberDTO.Response.Member(m.getId(), m.getUserId(),m.getUsername()))
                 .collect(Collectors.toList());
+        //log.info("전체 멤보 정보 : {}",collect.toString());
+        //전체 멤보 정보 : [MemberDTO.Response.Member(id=1, userId=hong01, username=홍길동)]
 
         return new MemberDTO.Result<>(collect);
     }
 
     //회원 정보 갱신
-    @PutMapping("/members")
-    public MemberDTO.Result<?> updateMember(
+    @PutMapping("/members")  // /api/members
+    public MemberDTO.Result<?> updateMember( //<?> 와일드 카드 무슨 내용이든지 갑을 받아줌
             @RequestBody MemberDTO.Request.Update request,
             @RequestHeader("Authorization") String token) {
-        
+        //@RequestBody MemberDTO.Request.Update request => 클라이언트가 보낸 수정할 데이터를(json) update 객체로 변환해서 받음
+        //@RequestHeader("Authorization") String token => 헤더에서 인증 토큰을 가져와서 사용자가 수정 권한이 있는지 확인하는 용도
+
+        //유효한 토큰인지 확인
         if(!jwtUtil.validateJwt(token)){
             return new MemberDTO.Result<>("유효한 토큰이 아닙니다");
         }
 
+        //member객체에서 id를 가져옴
         Long id = memberService.tokenToMember(token).getId();
+        //새로운 비밀번호와 새로운 이름을 DB에 저장
         memberService.update(id, request.getUsername(), request.getPassword());
 
+        //id에 맞는 member을 조회및 가져옴
         Member findmember = memberService.findById(id);
+        //반환값은 새로 갱신된 회원 정보를 출력
         return new MemberDTO.Result<>(
                 new MemberDTO.Response.Member(findmember.getId(), findmember.getUserId(), findmember.getUsername()));
     }
@@ -94,13 +104,18 @@ public class MemberController {
     //회원 삭제
     @DeleteMapping("/members")
     public MemberDTO.Result<String> deleteMember(@RequestHeader("Authorization") String token){
+
+        //유효한 토큰 값인지 확인
         if(!jwtUtil.validateJwt(token)){
             return new MemberDTO.Result<>("유효한 토큰이 아닙니다.");
         }
 
+        //member객체에서 id를 가져옴
         Long id = memberService.tokenToMember(token).getId();
+        //service.delete메소드 호출 및 매개변수로 id를 보냄
         memberService.delete(id);
 
+        //회원삭제 완료라는 값을 출력
         return new MemberDTO.Result<>("회원삭제 완료");
     }
 }

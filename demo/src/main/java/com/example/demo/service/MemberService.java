@@ -16,8 +16,13 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
 
-    public Member tokenToMember(String token){
+    //토큰을 확인해서 현재 이용중인 회원 정보를 DB에서 찾아옴
+    public Member tokenToMember(String token){ //token을 매개변수로 받음
+        //userId를 반환해줌
         return memberRepository.findByUserId(jwtUtil.getClaimsFromJwt(token).getSubject());
+        //jwtUtil.getClaimsFromJwt(token) : 토큰을 해독
+        //.getSubject() : 해독한 내용에서 ID를 가져옴
+        //memberRepository.findByUserId() : 아이디로 DB에 가서 회원 객체를 가져옴(member)
     }
 
     public List<Member> findAll() {return memberRepository.findAll();}
