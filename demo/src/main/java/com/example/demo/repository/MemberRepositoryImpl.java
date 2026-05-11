@@ -42,19 +42,27 @@ public class MemberRepositoryImpl implements MemberRepository {
         File file = new File(DATA_FILE_PATH);
         if (file.exists()) {
             try {
+                //파일에 있는 회원들의 정보 읽어서 list로 저장
                 List<Member> members = objectMapper.readValue(file, new TypeReference<List<Member>>() {
                 });
+                //각각의 멤버의 회원들을 반복문으로~~
                 for (Member member : members) {
+                    //Map 형태의 저장소에 하나씩 저장
                     store.put(member.getId(), member);
+
+                    //ID 중복 충동 방지
                     if (member.getId() > sequence.get()) {
                         sequence.set(member.getId());
                     }
                 }
+                //명몇의 회원 데이터를 읽었는지 알려줌
                 log.info("회원 데이터 로드 완료: {}명", members.size());
             } catch (Exception e) {
+                //오류가 뜰 때
                 log.error("회원 데이터 로드 실패", e);
             }
         } else {
+            //파일이 없으면 새로 만들기
             File directory = new File("data");
             if (!directory.exists()) {
                 directory.mkdirs();
@@ -66,9 +74,15 @@ public class MemberRepositoryImpl implements MemberRepository {
     // 메모리 내용을 JSON 파일에 저장 (DB대체)
     private void saveDataToFile() {
         try {
+            //데이터를 저장하는 내용
             List<Member> members = new ArrayList<>(store.values());
+
+            //writerWithDefaultPrettyPrinter() => json 값을 들여쓰기와 줄바꿈을 해줌
+            //writeValue() => 1번째 인자 : 데이터를 저장할 파일, 2번째 인자 : json으로 변환할 자바 객체(members(list))
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File(DATA_FILE_PATH), members);
         } catch (Exception e) {
+
+            //데이터 저장을 실패하면
             log.error("회원 데이터 저장 실패", e);
             throw new RuntimeException("데이터 저장 실패", e);
         }
@@ -114,22 +128,26 @@ public class MemberRepositoryImpl implements MemberRepository {
      @Override
      public Member findById(Long id) {
      return store.get(id);
-     }
+     }//member에서 id값만 찾아옴
 
      @Override
      public List<Member> findAll() {
      return new ArrayList<>(store.values());
+     } //모든 회원들의 값을 찾아옴
+
+     @Override
+     public void remove(Long id) { //회원을 삭제할 때 사용
+         store.remove(id);
+         saveDataToFile();
      }
 
      @Override
-     public void remove(Long id) {
-     store.remove(id);
-     saveDataToFile();
-     }
-
-     @Override
-     public Member findByUserId(String userId) {
-        return store.values().stream()
+     public Member findByUserId(String userId) { //userId 값이 있는지 확인하는 메소드
+         //sotre.values().stream() => map에 담긴 모든 member객체들을 보내줌
+         //.filter() => 조건에 맞는 데이터만 걸러냄
+         //.findAny() => 값에 맞는 데이터가 발견되는 즉시 중단하고 그 값 반환
+         //.orElse() => 반복문을 다 돌았는데 값이 없으면 null 값 반환
+         return store.values().stream()
             .filter(member -> member.getUserId().equals(userId))
             .findAny()
             .orElse(null);
