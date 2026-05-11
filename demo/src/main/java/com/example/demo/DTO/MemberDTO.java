@@ -6,11 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 public class MemberDTO {
+    //기본 생성자
     private MemberDTO(){
 
     }
 
+    //요청 데이터 전용 DTO
     public static class Request {
+
+        //생성을 요청받을때
         @Data
         @NoArgsConstructor
         public static class Create {
@@ -19,6 +23,7 @@ public class MemberDTO {
             private String username;
         }
 
+        //Update를 요청 받을때
         @Data
         @NoArgsConstructor
         public static class Update{
@@ -26,6 +31,7 @@ public class MemberDTO {
             private String password;
         }
 
+        //login을 요청 받을때
         @Data
         @NoArgsConstructor
         public static class Login {
@@ -34,6 +40,7 @@ public class MemberDTO {
         }
     }
 
+    //응답 데이터 전용 DTO
     public static class Response{
         @Data
         @AllArgsConstructor
@@ -44,6 +51,7 @@ public class MemberDTO {
         }
     }
 
+    //공통 응답 래퍼(Wrapper) <T> : 제네릭
     @Data
     @AllArgsConstructor
     public static class Result<T> {
