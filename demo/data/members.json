@@ -1,6 +1,6 @@
 [ {
-  "userId" : "hong01",
-  "password" : "$2a$10$bWJ/3IZxm8XBEFXweGLxje3D1qLblphEpsI1Tmk44ueiUynPKc.ja",
-  "username" : "홍길동",
-  "id" : 1
+  "userId" : "hong02",
+  "password" : "$2a$10$OzYPQYdt7luded/QuM6UC.FxKsoREmYHBq0A5y1dArwuFQtJxPMT2",
+  "username" : "홍명동",
+  "id" : 2
 } ]
