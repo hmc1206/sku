@@ -1,6 +1,10 @@
 package com.example.demo.domain;
 //데이터를 표현하는 객체
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,10 +13,14 @@ import lombok.Setter;
 @Setter
 @Getter
 @NoArgsConstructor
+@Entity
 public class Member {
     //DB에 자동으로 생성되는 순번(?)
+    @Id
+    @GeneratedValue
     private Long id;
     //userId => ex)hong01
+    @Column(unique = true)
     private String userId;
     //password => ex)1234
     private String password;

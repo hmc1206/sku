@@ -4,14 +4,17 @@ package com.example.demo.service;
 import com.example.demo.domain.Member;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.utils.JwtUtil;
+
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true) //데이터베이스에서 하나의 작업 단위를 의미, 모든 작업을 하나로 묶음
 public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtUtil jwtUtil;
@@ -31,6 +34,7 @@ public class MemberService {
     //memberId를 받아서 그값에 맞는 회원의 id를 찾음
     public Member findById(Long memberId) {return memberRepository.findById(memberId);}
 
+    @Transactional
     //id,newName,newPassword를 매개변수로 받음
     public void update(Long id, String newName, String newPassword){
 
@@ -52,6 +56,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
+    @Transactional
     public Long signUp(Member member){
         //BCrypt.gensalt : 암호활때마다 매번 다른 무작위값 생성
         //BCrypt.hashpw : member.getPassowr()값과 BCrypt.gensalt()의 값을 석어서 암호문 생성
@@ -66,6 +71,7 @@ public class MemberService {
     }
 
 
+    @Transactional
     //memberRepository(=>DB)에서 매개변수로 받은 id에 맞는 회원정보를 삭제
     public void delete(Long id) { memberRepository.remove(id);}
 

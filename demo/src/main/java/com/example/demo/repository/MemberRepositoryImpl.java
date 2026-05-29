@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Slf4j // 콘솔에 상태를 찍기 위해 사용 (Lombok)
-@Repository // 스프링 빈으로 등록
+//@Repository // 스프링 빈으로 등록
 public class MemberRepositoryImpl implements MemberRepository {
 
     // JSON 파일 읽기/쓰기용 Jackson 객체
