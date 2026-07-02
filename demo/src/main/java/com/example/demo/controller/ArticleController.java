@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Controller
+@RestController
 @RequiredArgsConstructor //의존성 주입
 @RequestMapping("/api") //주소
 public class ArticleController {
