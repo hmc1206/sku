@@ -40,20 +40,25 @@ public class CommentService {
     @Transactional
     public Comment updateComment(Long commentId, String token, String content){
         //commentId로 댓글을 조회하는 메서드 (findById)를 사용해서 반환된 결과를 optionalComment에 저장
-        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+        //Optional<Comment> optionalComment = commentRepository.findById(commentId);
         //optionalComment가 비어있다면(댓글 없음) null 반환
-        if(optionalComment.isEmpty()) return null;
+        //if(optionalComment.isEmpty()) return null;
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new InvalidArticleIdException("존재하지 않는 댓글입니다."));
 
         //token에서 회원을 추출하는 메서드(tokenToMember)를 사용해서 반환된 결과를 member에 저장
         Member member = memberService.tokenToMember(token);
         //member가 없다면 (토큰이 유효하지 않거나 회원 없음) return null
-        if(member == null) return null;
+        if(member == null) {
+            throw new InvalidArticleIdException("인증되지 않은 사용자입니다.");
+        }
 
         //optionalComment에서 댓글(Comment)을 거내 comment 변수에 저장
-        Comment comment = optionalComment.get();
+        //Comment comment = optionalComment.get();
 
         //comment의 작성자(writer)와 token에서 추출한 member가 같은지 (id 비교로)확인 같지 않다면 null 반환
-        if(!comment.getWriter().getId().equals(member.getId())) return null;
+        if(!comment.getWriter().getId().equals(member.getId())){
+            throw new InvalidArticleIdException("댓글 수정 권한이 없습니다.");
+        }
 
         //같다면 comment의 content를 수정(updateComment(content))진행합니다.
         comment.updateComment(content);
@@ -74,17 +79,20 @@ public class CommentService {
     @Transactional
     public String deleteComment(Long commentId, String token){
         //
-        Optional<Comment> optionalComment = commentRepository.findById(commentId);
-        if(optionalComment == null) return "존재하지 않은 댓글입니다";
+       Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new InvalidArticleIdException("존재하지 않는 댓글입니다."));
+        //if(optionalComment == null) return "존재하지 않은 댓글입니다";
         Member member = memberService.tokenToMember(token);
-        if(member == null) return "인증되지 않은 사용자입니다.";
+        if(member == null){
+            throw new InvalidArticleIdException("인증되지 않은 사용자입니다.");
+        }
 
         //optionalComment에서 댓글(Comment)을 꺼내 comment 변수에 저장
-        Comment comment = optionalComment.get();
+        //Comment comment = optionalComment.get();
 
         //comment의 작성자 (writer)와 token에서 추출한 member가 같은지(id비교로)확인 같지 않다면 -> "댓글 삭제 권한이 없습니다"봔한
-        if(!comment.getWriter().getId().equals(member.getId()))
-            return "댓글 삭제 권한이 없습니다";
+        if(!comment.getWriter().getId().equals(member.getId())){
+            throw new InvalidArticleIdException("댓글 삭제 권한이 없습니다");
+        }
 
         //commentRepository(comment)를 호출해 댓글 삭제
         commentRepository.delete(comment);
