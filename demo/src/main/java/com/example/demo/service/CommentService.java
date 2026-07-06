@@ -43,13 +43,13 @@ public class CommentService {
         //Optional<Comment> optionalComment = commentRepository.findById(commentId);
         //optionalComment가 비어있다면(댓글 없음) null 반환
         //if(optionalComment.isEmpty()) return null;
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new InvalidArticleIdException("존재하지 않는 댓글입니다."))
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new InvalidArticleIdException("존재하지 않는 댓글입니다."));
 
         //token에서 회원을 추출하는 메서드(tokenToMember)를 사용해서 반환된 결과를 member에 저장
         Member member = memberService.tokenToMember(token);
         //member가 없다면 (토큰이 유효하지 않거나 회원 없음) return null
         if(member == null) {
-            throw new InvalidArticleIdException("인증되지 않은 사용자입니다.")
+            throw new InvalidArticleIdException("인증되지 않은 사용자입니다.");
         }
 
         //optionalComment에서 댓글(Comment)을 거내 comment 변수에 저장
