@@ -16,4 +16,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidComment(InvalidArticleIdException e){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(HandleJwtException.class)
+    public  ResponseEntity<String> handleJwt(HandleJwtException e){
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(e.getMessage());
+    }
 }
